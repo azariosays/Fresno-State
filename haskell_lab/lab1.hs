@@ -31,8 +31,8 @@ or_dist_xor  = and [(p /= (q || x)) == ((x /= q) || (p /= x)) | p <- bools, q <-
                
 -- The implication operator on Bool in Haskell is equivalent to <=.
 -- Check whether implication is associative or commutative:
-assoc_imp = undefined
-comm_imp = undefined
+assoc_imp = and [((p <= q) <= x) == ((x <= p) <= q) | p <- bools, q <-bools, x <- bools]
+comm_imp = and [(p <= q) || (q <= p) | p <- bools, q <- bools]
 
 
 ----- Evaluating statements involving quantifiers
@@ -52,8 +52,8 @@ u = [1..8]
 prob1 = and [(n > 2) <= (n > 1) | n <- u]
 
 -- 2. Every number is either greater than 1 or less than 2
--- A: forall n,
-prob2 = and [(n > 1) && (n > 2) | n <- u]
+-- A: forall n, (n > 2) or (n > 1)
+prob2 = and [(n > 1) || (n > 2) | n <- u]
 
 -- 3. Every two numbers are comparable with <= (i.e., either one is <=
 --    the other or vice-versa)
@@ -62,8 +62,8 @@ prob3 = undefined
 
 -- 4. For every odd number, there is a greater even number (use the Haskell
 --    predicates odd, even :: Integral a => a -> Bool)
--- A: 
-prob4 = undefined
+-- A: forall n,  
+prob4 = and [(odd :: Integer -> Bool) <= (even :: Integer -> Bool) | n <- u, odd <- n, even <- n + 1]
 
 -- 5. For every even number, there is a greater odd number
 -- A: 
