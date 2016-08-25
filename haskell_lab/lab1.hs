@@ -12,11 +12,11 @@ and_commutes = and [(p && q) == (q && p) | p <- bools, q <- bools]
 -- Write similar definitions that test whether "or" is commutative,
 -- "and" and "or" are associative, "and" distributes over "or",
 -- "or" distributes over "and"
-or_commutes = and  [(p || q) == (q || p) | p <- bools, q <- bools]
-and_assoc = and [((p && q) && x) == ((x && p) && q) | p <- bools, q <- bools, x <- bools] 
-or_assoc = and [((p || q) || x) == ((x || p) || q) | p <- bools, q <- bools, x <- bools]
-and_dist = and [(p && (q || x)) == (x && (q || p)) | p <- bools, q <- bools, x <- bools]
-or_dist = and [(p || (q && x)) == ((p || q) && (p || x)) | p <- bools, q <- bools, x <- bools]
+or_commutes = and [(p || q) == (q || p) | p <- bools, q <- bools]
+and_assoc   = and [((p && q) && x) == ((x && p) && q) | p <- bools, q <- bools, x <- bools] 
+or_assoc    = and [((p || q) || x) == ((x || p) || q) | p <- bools, q <- bools, x <- bools]
+and_dist    = and [(p && (q || x)) == (x && (q || p)) | p <- bools, q <- bools, x <- bools]
+or_dist     = and [(p || (q && x)) == ((p || q) && (p || x)) | p <- bools, q <- bools, x <- bools]
           
 -- The exclusive-or operation on Bool in Haskell is equivalent to /=.
 -- Test the properties of this operation (commutativity, associativity,
@@ -52,31 +52,38 @@ u = [1..8]
 prob1 = and [(n > 2) <= (n > 1) | n <- u]
 
 -- 2. Every number is either greater than 1 or less than 2
--- A: forall n, (n > 2) or (n > 1)
-prob2 = and [(n > 1) || (n > 2) | n <- u]
+-- A: forall n, (n > 2) or (n < 1)
+
+prob2 = and [(n > 1) || (n < 2) | n <- u]
+
+
+--add :: Num a => a -> a -> a
+--add x y = x + y
 
 -- 3. Every two numbers are comparable with <= (i.e., either one is <=
 --    the other or vice-versa)
 -- A: 
-prob3 = undefined
+prob3 = and [(x <= y) || (y <= x) | x <- u, y <- u ]
 
 -- 4. For every odd number, there is a greater even number (use the Haskell
 --    predicates odd, even :: Integral a => a -> Bool)
 -- A: forall n,  
-prob4 = and [(odd :: Integer -> Bool) <= (even :: Integer -> Bool) | n <- u, odd <- n, even <- n + 1]
+prob4 = and [(x < x + 1) | x <- u, odd x]
 
 -- 5. For every even number, there is a greater odd number
 -- A: 
-prob5 = undefined
+prob5 = and [(x < x + 1) | x <- u, even x]
 
 -- 6. There are two odd numbers that add up to 6
 -- A: 
-prob6 = undefined
+prob6 = or [(x + y == 6) | x <- u, y <- u, odd x && odd y] 
 
 -- 7. There is a number that is at least as large as every number
 --    (i.e., according to >=)
--- A: 
-prob7 = undefined
+-- A: forall n, (n >= n)
+prob7 = or (map and [[x >= y | y <- u]| x <- u])
+
+-- filter, map, reduce/fold.  higher order functions, Lambda Calculus, currying,  ||| functor, applicative, monad.
 
 -- 8. For every number, there is a different number such that there are no
 --    numbers between these two.
