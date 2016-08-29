@@ -88,4 +88,4 @@ prob7 = or (map and [[x >= y | y <- u]| x <- u])
 -- 8. For every number, there is a different number such that there are no
 --    numbers between these two.
 -- A: 
-prob8 = undefined
+prob8 = and [n < x && x < (n + 1) | n <- u, x <- u]
